@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rifa Solidaria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,600;0,700;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde: #0E3B34;
+    --verde-oscuro: #082621;
+    --dorado: #D8A83E;
+    --dorado-claro: #F0D488;
+    --crema: #F6EFDD;
+    --rojo: #B8362C;
+    --tinta: #1A1410;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{
+    background: var(--verde-oscuro);
+    font-family:'Space Grotesk', sans-serif;
+    color: var(--tinta);
+    display:flex;
+    justify-content:center;
+    padding: 32px 16px;
+    min-height:100vh;
+  }
+  .stage{
+    width:100%;
+    max-width: 420px;
+  }
+  .ticket{
+    background: var(--crema);
+    border-radius: 18px;
+    overflow:hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(216,168,62,0.25);
+    position:relative;
+  }
+  .band{
+    background:
+      repeating-linear-gradient(135deg, var(--rojo) 0 10px, var(--dorado) 10px 20px);
+    height: 10px;
+  }
+  .header{
+    background: var(--verde);
+    color: var(--crema);
+    padding: 26px 26px 22px;
+    position: relative;
+    overflow:hidden;
+  }
+  .header::after{
+    content:"";
+    position:absolute;
+    right:-40px; top:-40px;
+    width:160px; height:160px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(216,168,62,0.35), transparent 70%);
+  }
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dorado-claro);
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:16px; height:2px;
+    background: var(--dorado-claro);
+    display:inline-block;
+  }
+  h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size: 44px;
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    margin-top: 10px;
+    color: var(--crema);
+  }
+  h1 span{
+    color: var(--dorado-claro);
+  }
+  .sub{
+    margin-top: 8px;
+    font-size: 14.5px;
+    color: rgba(246,239,221,0.8);
+    max-width: 30ch;
+  }
+  .body{
+    padding: 24px 26px 8px;
+  }
+  .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(26,20,16,0.18);
+  }
+  .row:last-child{ border-bottom:none; }
+  .row .label{
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(26,20,16,0.55);
+    font-weight:600;
+  }
+  .row .value{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size: 18px;
+    text-align:right;
+  }
+  .row .value.small{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:15px;
+  }
+  .mecanica{
+    margin: 4px 26px 22px;
+    background: rgba(14,59,52,0.06);
+    border: 1px solid rgba(14,59,52,0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    line-height:1.5;
+    color: var(--verde);
+  }
+  .mecanica b{ color: var(--rojo); }
+  .perforation{
+    position:relative;
+    height: 0;
+    border-top: 2px dashed rgba(26,20,16,0.25);
+    margin: 0 0;
+  }
+  .perforation::before,.perforation::after{
+    content:"";
+    position:absolute;
+    top:-11px;
+    width:22px; height:22px;
+    border-radius:50%;
+    background: var(--verde-oscuro);
+  }
+  .perforation::before{ left:-11px; }
+  .perforation::after{ right:-11px; }
+  .stub{
+    background: var(--verde);
+    color: var(--crema);
+    padding: 20px 26px 26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 16px;
+  }
+  .stub .price-label{
+    font-size:11px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color: var(--dorado-claro);
+  }
+  .stub .price{
+    font-family:'Anton', sans-serif;
+    font-size: 30px;
+    color: var(--crema);
+  }
+  .stub .nequi{
+    text-align:right;
+    font-size: 13px;
+    color: rgba(246,239,221,0.85);
+  }
+  .nequi b{
+    display:block;
+    font-family:'Fraunces', serif;
+    font-size: 16px;
+    color: var(--dorado-claro);
+    font-weight:700;
+  }
+  .footnote{
+    text-align:center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: rgba(246,239,221,0.55);
+    padding: 0 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="ticket">
+      <div class="band"></div>
+      <div class="header">
+        <div class="eyebrow">Rifa solidaria</div>
+        <h1>PREMIO<br><span>$200.000</span></h1>
+        <div class="sub">Con las dos últimas cifras de la Lotería de Boyacá</div>
+      </div>
+
+      <div class="body">
+        <div class="row">
+          <div class="label">Sorteo</div>
+          <div class="value">26 de septiembre</div>
+        </div>
+        <div class="row">
+          <div class="label">Basado en</div>
+          <div class="value small">Lotería de Boyacá · últimas 2 cifras</div>
+        </div>
+        <div class="row">
+          <div class="label">Responsable</div>
+          <div class="value">Edwin Torres</div>
+        </div>
+      </div>
+
+      <div class="mecanica">
+        Cada número de <b>00 a 99</b> tiene un dueño. Gana quien tenga el número
+        que coincida con las <b>dos últimas cifras</b> del resultado de la Lotería
+        de Boyacá del 26 de septiembre.
+      </div>
+
+      <div class="perforation"></div>
+
+      <div class="stub">
+        <div>
+          <div class="price-label">Valor del número</div>
+          <div class="price">$5.000</div>
+        </div>
+        <div class="nequi">
+          Pagos por Nequi<br>
+          <b>[ 3204565863 ]</b>
+        </div>
+      </div>
+    </div>
+    <div class="footnote">Separa tu número con Edwin Torres antes del sorteo · Rifa de la suerte 🍀</div>
+  </div>
+</body>
+</html>
