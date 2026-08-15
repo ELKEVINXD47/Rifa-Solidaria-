@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rifa solidaria — Números</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@0,600;0,700;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde: #0E3B34;
+    --verde-oscuro: #082621;
+    --dorado: #D8A83E;
+    --dorado-claro: #F0D488;
+    --crema: #F6EFDD;
+    --rojo: #B8362C;
+    --tinta: #1A1410;
+    --verde-vivo: #2E7D63;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{
+    background: var(--verde-oscuro);
+    font-family:'Space Grotesk', sans-serif;
+    color: var(--tinta);
+    min-height:100vh;
+  }
+  .wrap{
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+  }
+  header{
+    color: var(--crema);
+    text-align:center;
+    margin-bottom: 18px;
+  }
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dorado-claro);
+    font-weight:600;
+  }
+  h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size: 28px;
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+  }
+  h1 span{ color: var(--dorado-claro); }
+  .sub{
+    font-size: 13px;
+    color: rgba(246,239,221,0.7);
+    margin-top: 6px;
+  }
+  .status-bar{
+    display:flex;
+    justify-content:center;
+    gap: 16px;
+    margin: 16px 0 20px;
+    font-size: 12px;
+    color: rgba(246,239,221,0.8);
+  }
+  .status-bar .dot{
+    display:inline-block;
+    width:9px;height:9px;
+    border-radius:50%;
+    margin-right:5px;
+  }
+  .dot.libre{ background: var(--crema); border:1px solid rgba(0,0,0,0.2); }
+  .dot.vendido{ background: var(--rojo); }
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .num{
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: var(--crema);
+    color: var(--verde);
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size: 15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    border: none;
+    transition: transform 0.12s ease;
+    position:relative;
+  }
+  .num:active{ transform: scale(0.94); }
+  .num.vendido{
+    background: var(--rojo);
+    color: var(--crema);
+    cursor: default;
+  }
+  .num.vendido:active{ transform:none; }
+  .num.mio{
+    outline: 2px solid var(--dorado);
+    outline-offset: 2px;
+  }
+  .loading{
+    text-align:center;
+    color: rgba(246,239,221,0.7);
+    padding: 40px 0;
+    font-size: 14px;
+  }
+  /* Modal */
+  .overlay{
+    position:fixed; inset:0;
+    background: rgba(8,38,33,0.75);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding: 20px;
+    z-index: 10;
+  }
+  .overlay.show{ display:flex; }
+  .modal{
+    background: var(--crema);
+    border-radius: 16px;
+    padding: 22px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  }
+  .modal h2{
+    font-family:'Fraunces', serif;
+    font-size: 20px;
+    color: var(--verde);
+    margin-bottom: 4px;
+  }
+  .modal p{
+    font-size: 13px;
+    color: rgba(26,20,16,0.6);
+    margin-bottom: 14px;
+  }
+  .modal input{
+    width:100%;
+    padding: 11px 12px;
+    border-radius: 9px;
+    border: 1px solid rgba(26,20,16,0.2);
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 14px;
+    margin-bottom: 12px;
+    background:white;
+  }
+  .modal input:focus{ outline: 2px solid var(--verde-vivo); }
+  .modal-actions{
+    display:flex;
+    gap: 10px;
+  }
+  .btn{
+    flex:1;
+    padding: 11px;
+    border-radius: 9px;
+    border:none;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size: 14px;
+    cursor:pointer;
+  }
+  .btn.confirmar{ background: var(--verde); color: var(--crema); }
+  .btn.cancelar{ background: rgba(26,20,16,0.08); color: var(--tinta); }
+  .btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  .error-msg{
+    text-align:center;
+    color: var(--dorado-claro);
+    font-size:13px;
+    margin-top: 16px;
+    padding: 0 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Rifa solidaria</div>
+      <h1>Elige tu <span>número</span></h1>
+      <div class="sub">Toca un número libre para apartarlo · $5.000 c/u</div>
+    </header>
+
+    <div class="status-bar">
+      <span><span class="dot libre"></span>Libre</span>
+      <span><span class="dot vendido"></span>Vendido</span>
+    </div>
+
+    <div id="loading" class="loading">Cargando números…</div>
+    <div id="grid" class="grid" style="display:none;"></div>
+    <div id="errorMsg" class="error-msg" style="display:none;"></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2 id="modalTitle">Apartar número</h2>
+      <p id="modalSub">Escribe tu nombre para reservarlo.</p>
+      <input type="text" id="nameInput" placeholder="Tu nombre" maxlength="40" autocomplete="off">
+      <div class="modal-actions">
+        <button class="btn cancelar" id="cancelBtn">Cancelar</button>
+        <button class="btn confirmar" id="confirmBtn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // 👉 PEGA AQUÍ LA URL DE TU APPS SCRIPT (termina en /exec)
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzB_dTensOF78tj3MgRaRStb-bK1bTFH8pMAGfKCYxv3thPf3MRDM2zHo6MfpDGGilo/exec';
+
+  let numeros = {}; // { "00": "Juan Perez", ... } — solo números ya apartados
+  let selectedNum = null;
+
+  const gridEl = document.getElementById('grid');
+  const loadingEl = document.getElementById('loading');
+  const errorEl = document.getElementById('errorMsg');
+  const overlay = document.getElementById('overlay');
+  const nameInput = document.getElementById('nameInput');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalSub = document.getElementById('modalSub');
+
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  async function loadNumeros(){
+    try{
+      const res = await fetch(SCRIPT_URL);
+      numeros = await res.json();
+    }catch(e){
+      numeros = {};
+      errorEl.textContent = 'No se pudo conectar con la hoja de cálculo. Revisa la URL del script.';
+      errorEl.style.display = 'block';
+    }
+    render();
+  }
+
+  function render(){
+    loadingEl.style.display = 'none';
+    gridEl.style.display = 'grid';
+    gridEl.innerHTML = '';
+    for(let i=0; i<100; i++){
+      const key = pad(i);
+      const owner = numeros[key];
+      const btn = document.createElement('button');
+      btn.className = 'num' + (owner ? ' vendido' : '');
+      btn.textContent = key;
+      if(owner){
+        btn.title = owner;
+      }
+      btn.addEventListener('click', () => openModal(key, owner));
+      gridEl.appendChild(btn);
+    }
+  }
+
+  function openModal(key, owner){
+    selectedNum = key;
+    if(owner){
+      modalTitle.textContent = `Número ${key} — vendido`;
+      modalSub.textContent = `Apartado por: ${owner}`;
+      nameInput.style.display = 'none';
+      document.getElementById('confirmBtn').style.display = 'none';
+    } else {
+      modalTitle.textContent = `Apartar número ${key}`;
+      modalSub.textContent = 'Escribe tu nombre para reservarlo.';
+      nameInput.style.display = 'block';
+      nameInput.value = '';
+      document.getElementById('confirmBtn').style.display = 'block';
+    }
+    errorEl.style.display = 'none';
+    overlay.classList.add('show');
+    if(!owner) setTimeout(() => nameInput.focus(), 50);
+  }
+
+  function closeModal(){
+    overlay.classList.remove('show');
+    selectedNum = null;
+  }
+
+  document.getElementById('cancelBtn').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
+
+  document.getElementById('confirmBtn').addEventListener('click', async () => {
+    const name = nameInput.value.trim();
+    if(!name){
+      nameInput.focus();
+      return;
+    }
+    const confirmBtn = document.getElementById('confirmBtn');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Guardando…';
+    try{
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        // text/plain evita el preflight CORS de Apps Script
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ numero: selectedNum, nombre: name })
+      });
+      const result = await res.json();
+      if(!result.success){
+        errorEl.textContent = result.owner
+          ? `Ese número ya lo tomó ${result.owner} justo ahora. Elige otro.`
+          : 'No se pudo guardar ese número. Intenta con otro.';
+        errorEl.style.display = 'block';
+        closeModal();
+        await loadNumeros();
+        return;
+      }
+      closeModal();
+      await loadNumeros();
+    }catch(e){
+      errorEl.textContent = 'No se pudo guardar. Revisa tu conexión e intenta de nuevo.';
+      errorEl.style.display = 'block';
+    }finally{
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Confirmar';
+    }
+  });
+
+  loadNumeros();
+</script>
+</body>
+</html>
